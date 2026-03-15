@@ -1,0 +1,21 @@
+{
+  "name": "api-practice",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "biome": "^0.3.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}
