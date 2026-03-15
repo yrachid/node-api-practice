@@ -7,6 +7,25 @@ Tech stack:
 - postgres
 - bull-mq
 - redis
+- docker compose
+
+## Infra checklist
+- [ ] Postgres database
+  - [ ] Test database
+  - [ ] Persisting data
+- [ ] Redis server
+
+## Tools & Libs checklist
+
+- [x] Http Routing: express;
+- [x] Formatting: biome;
+- [x] Unit Testing: vitest;
+- [x] E2E testing: supertest (with vitest)
+- [ ] Logging: pino
+- [ ] Database: kysely
+- [ ] Database migrations:
+- [ ] Env vars: dotenv
+
 
 # Requirements
 

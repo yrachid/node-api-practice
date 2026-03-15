@@ -1,12 +1,7 @@
-import express from "express";
+import type { Express } from "express";
+import { buildApplicationServer } from "./server.js";
 
-const app = express();
-
-app.get("/", (_, res) => {
-  res.json({
-    ok: true,
-  });
-});
+const app: Express = buildApplicationServer();
 
 app.listen(3001, () => {
   console.log("up");
