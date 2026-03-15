@@ -11,8 +11,8 @@ Tech stack:
 
 ## Infra checklist
 - [ ] Postgres database
-  - [ ] Test database
-  - [ ] Persisting data
+  - [ ] Staging: persistent
+  - [ ] Test: ephemeral
 - [ ] Redis server
 
 ## Tools & Libs checklist
