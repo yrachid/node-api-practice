@@ -1,6 +1,6 @@
 import { Kysely, PostgresDialect, type Generated } from "kysely";
 import { Pool } from "pg";
-import { Config } from "../config.js";
+import type { AppConfig } from "../config";
 
 export interface Product {
   id: Generated<number>;
@@ -12,15 +12,19 @@ export interface Database {
   products: Product;
 }
 
-const dialect = new PostgresDialect({
-  pool: new Pool({
-    database: Config.database.name,
-    host: Config.database.host,
-    user: Config.database.user,
-    password: Config.database.password,
-    port: Config.database.port,
-    max: Config.database.poolSize,
-  }),
-});
+export type Connection = Kysely<Database>;
 
-export const db = new Kysely<Database>({ dialect });
+export const createConnection = (config: AppConfig): Connection => {
+  const dialect = new PostgresDialect({
+    pool: new Pool({
+      database: config.database.name,
+      host: config.database.host,
+      user: config.database.user,
+      password: config.database.password,
+      port: config.database.port,
+      max: config.database.poolSize,
+    }),
+  });
+
+  return new Kysely<Database>({ dialect });
+};

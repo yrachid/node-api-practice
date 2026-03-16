@@ -1,15 +1,26 @@
 import { suite, test, expect } from "vitest";
-import { ProductService } from "./product.service.js";
+import { ProductServiceImpl } from "./product.service.js";
+import { ProductRepositoryStub } from "./product.repository.js";
 
 suite("ProductService", () => {
   test("#all", async () => {
-    const allProducts = await ProductService.all();
+    const repo = new ProductRepositoryStub();
 
-    expect(allProducts).toStrictEqual([
+    repo.init([
       {
         id: 1,
         name: "Broomstick",
-        price: "25.50",
+        price: 25.5,
+      },
+    ]);
+
+    const service = new ProductServiceImpl(repo);
+
+    expect(await service.all()).toStrictEqual([
+      {
+        id: 1,
+        name: "Broomstick",
+        price: 25.5,
       },
     ]);
   });

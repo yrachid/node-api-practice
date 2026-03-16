@@ -22,16 +22,42 @@ function readNumber(name: string) {
   return parsed;
 }
 
-configDotenv();
-
 export const Config = {
   database: {
-    host: readString("DATABASE_HOST"),
-    port: readNumber("DATABASE_PORT"),
-    name: readString("DATABASE_NAME"),
-    user: readString("DATABASE_USER"),
-    password: readString("DATABASE_PASSWORD"),
-    poolSize: readNumber("DATABASE_POOL_SIZE"),
+    host: () => readString("DATABASE_HOST"),
+    port: () => readNumber("DATABASE_PORT"),
+    name: () => readString("DATABASE_NAME"),
+    user: () => readString("DATABASE_USER"),
+    password: () => readString("DATABASE_PASSWORD"),
+    poolSize: () => readNumber("DATABASE_POOL_SIZE"),
   },
-  port: readNumber("PORT"),
+  port: () => readNumber("PORT"),
+};
+
+export type AppConfig = {
+  port: number;
+  database: {
+    host: string;
+    port: number;
+    name: string;
+    user: string;
+    password: string;
+    poolSize: number;
+  };
+};
+
+export const loadAppConfig = (): AppConfig => {
+  configDotenv();
+
+  return {
+    database: {
+      host: readString("DATABASE_HOST"),
+      port: readNumber("DATABASE_PORT"),
+      name: readString("DATABASE_NAME"),
+      user: readString("DATABASE_USER"),
+      password: readString("DATABASE_PASSWORD"),
+      poolSize: readNumber("DATABASE_POOL_SIZE"),
+    },
+    port: readNumber("PORT"),
+  };
 };
