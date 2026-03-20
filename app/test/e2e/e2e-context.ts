@@ -1,7 +1,8 @@
-import { test as baseTest, suite as baseSuite } from "vitest";
+import { test as baseTest } from "vitest";
 import { ApplicationModule } from "../../src/application.module";
 
 const TEST_ENV = {
+  NODE_ENV: "test",
   DATABASE_HOST: "localhost",
   DATABASE_NAME: "stockroom_test",
   DATABASE_PASSWORD: "postgres",

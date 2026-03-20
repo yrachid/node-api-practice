@@ -7,11 +7,13 @@ import {
 import { ProductModule } from "./product/product.module";
 import { HealthCheckModule } from "./health-check/health-check.module";
 import { DatabaseModule, type Connection } from "./database.module";
+import { type ApplicationLogger, LoggerModule } from "./logger.module";
 
 export type ApplicationContext = {
   app: Express;
   configuration: AppConfig;
   connection: Connection;
+  logger: ApplicationLogger;
 };
 
 export function create(env: Env): ApplicationContext {
@@ -19,7 +21,12 @@ export function create(env: Env): ApplicationContext {
 
   const configuration = ConfigurationModule.create(env);
 
-  const databaseModule = DatabaseModule.create(configuration);
+  const loggerModule = LoggerModule.create(configuration);
+
+  const databaseModule = DatabaseModule.create(
+    configuration,
+    loggerModule.logger,
+  );
 
   const healthCheckModule = HealthCheckModule.create();
 
@@ -27,10 +34,16 @@ export function create(env: Env): ApplicationContext {
     db: databaseModule.connection,
   });
 
+  app.use(loggerModule.httpMiddleware);
   app.use(productModule.router);
   app.use(healthCheckModule.router);
 
-  return { app, configuration, connection: databaseModule.connection };
+  return {
+    app,
+    configuration,
+    connection: databaseModule.connection,
+    logger: loggerModule.logger,
+  };
 }
 
 export const ApplicationModule = { create };

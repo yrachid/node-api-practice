@@ -7,8 +7,8 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx app/src/index.ts",
-    "test": "vitest run",
+    "dev": "NODE_ENV=staging tsx app/src/index.ts | jq -R '. as $line | try(fromjson) catch $line'",
+    "test": "NODE_ENV=test vitest run",
     "migrate:add": "bash ./scripts/new-migration.sh",
     "migrate": "tsx app/src/migrate.ts",
     "migrate:down": "tsx app/src/migrate.ts down"

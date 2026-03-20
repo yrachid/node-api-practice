@@ -2,12 +2,14 @@ import { ApplicationModule } from "./application.module";
 import { configDotenv } from "dotenv";
 
 function start() {
-  configDotenv();
+  configDotenv({
+    quiet: true,
+  });
 
-  const { app, configuration } = ApplicationModule.create(process.env);
+  const { app, configuration, logger } = ApplicationModule.create(process.env);
 
   app.listen(configuration.port, () => {
-    console.log(`up on ${configuration.port}`);
+    logger.info({ message: "up", port: configuration.port });
   });
 }
 

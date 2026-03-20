@@ -4,6 +4,7 @@ import { configDotenv } from "dotenv";
 import { Migrator, FileMigrationProvider, NO_MIGRATIONS } from "kysely";
 import { ConfigurationModule } from "./configuration.module";
 import { DatabaseModule } from "./database.module";
+import { LoggerModule } from "./logger.module";
 
 async function migrate(direction: "up" | "down") {
   const activeEnv = process.env.NODE_ENV;
@@ -15,8 +16,9 @@ async function migrate(direction: "up" | "down") {
   }
 
   const config = ConfigurationModule.create(process.env);
+  const { logger } = LoggerModule.create(config);
 
-  const { connection } = DatabaseModule.create(config);
+  const { connection } = DatabaseModule.create(config, logger);
 
   const migrator = new Migrator({
     db: connection,
@@ -34,19 +36,27 @@ async function migrate(direction: "up" | "down") {
 
   result.results?.forEach((it) => {
     if (it.status === "Success") {
-      console.log(
-        `migration "${it.migrationName}" ${direction === "up" ? "executed" : "reverted"} successfully`,
-      );
+      logger.info({
+        event: "migration.success",
+        name: it.migrationName,
+        direction,
+      });
     } else if (it.status === "Error") {
-      console.error(`failed to ${direction} migration "${it.migrationName}"`);
+      logger.error({
+        event: "migration.error",
+        name: it.migrationName,
+        direction,
+      });
     }
   });
 
   await connection.destroy();
 
   if (result.error) {
-    console.error(`failed to migrate ${direction}`);
-    console.error(result.error);
+    logger.error({
+      event: "migration.failure",
+      error: result.error,
+    });
     process.exit(1);
   }
 }
