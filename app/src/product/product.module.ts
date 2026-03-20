@@ -1,4 +1,4 @@
-import type { Connection } from "../database/connection";
+import type { Connection } from "../database.module";
 import { ProductController } from "./product.controller";
 import { ProductRepositoryDb } from "./product.repository";
 import { ProductServiceImpl } from "./product.service";

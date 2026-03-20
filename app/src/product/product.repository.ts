@@ -1,4 +1,4 @@
-import type { Connection } from "../database/connection";
+import type { Connection } from "../database.module";
 
 export abstract class ProductRepository {
   abstract findAll(): Promise<

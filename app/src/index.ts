@@ -1,12 +1,14 @@
-import type { Express } from "express";
-import { buildApplicationServer } from "./server.js";
-import { Config } from "./config.js";
+import { ApplicationModule } from "./application.module";
 import { configDotenv } from "dotenv";
 
-configDotenv();
+function start() {
+  configDotenv();
 
-const app: Express = buildApplicationServer();
+  const { app, configuration } = ApplicationModule.create(process.env);
 
-app.listen(Config.port(), () => {
-  console.log(`up on ${Config.port()}`);
-});
+  app.listen(configuration.port, () => {
+    console.log(`up on ${configuration.port}`);
+  });
+}
+
+start();

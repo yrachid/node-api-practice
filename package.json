@@ -8,7 +8,10 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx app/src/index.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "migrate:add": "bash ./scripts/new-migration.sh",
+    "migrate": "tsx app/src/migrate.ts",
+    "migrate:down": "tsx app/src/migrate.ts down"
   },
   "dependencies": {
     "dotenv": "^17.3.1",

@@ -1,6 +1,6 @@
 import { Kysely, PostgresDialect, type Generated } from "kysely";
 import { Pool } from "pg";
-import type { AppConfig } from "../config";
+import type { AppConfig } from "./configuration.module";
 
 export interface Product {
   id: Generated<number>;
@@ -14,7 +14,7 @@ export interface Database {
 
 export type Connection = Kysely<Database>;
 
-export const createConnection = (config: AppConfig): Connection => {
+export function create(config: AppConfig): { connection: Connection } {
   const dialect = new PostgresDialect({
     pool: new Pool({
       database: config.database.name,
@@ -26,5 +26,7 @@ export const createConnection = (config: AppConfig): Connection => {
     }),
   });
 
-  return new Kysely<Database>({ dialect });
-};
+  return { connection: new Kysely<Database>({ dialect }) };
+}
+
+export const DatabaseModule = { create };
