@@ -1,13 +1,15 @@
 import type { Connection } from "../database.module";
 import { ProductController } from "./product.controller";
 import { Router } from "express";
+import { ProductService } from "./product.service";
 
 export type ProductModuleDependencies = {
   db: Connection;
 };
 
 function create({ db }: ProductModuleDependencies) {
-  const controller = ProductController.create(db);
+  const service = new ProductService(db);
+  const controller = ProductController.create(service);
 
   const router = Router();
 
