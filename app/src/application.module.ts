@@ -1,4 +1,5 @@
 import express, { type Express } from "express";
+import bodyParser from "body-parser";
 import {
   ConfigurationModule,
   type AppConfig,
@@ -37,6 +38,7 @@ export function create(env: Env): ApplicationContext {
 
   const cartModule = CartModule.create(databaseModule.connection);
 
+  app.use(bodyParser.json());
   app.use(loggerModule.httpMiddleware);
   app.use(productModule.router);
   app.use(cartModule.router);

@@ -14,6 +14,7 @@
     "migrate:down": "tsx app/src/migrate.ts down | jq -R '. as $line | try(fromjson) catch $line'"
   },
   "dependencies": {
+    "body-parser": "^2.2.2",
     "cache-manager": "^7.2.8",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
