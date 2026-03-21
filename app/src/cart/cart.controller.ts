@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { CartService } from "./cart.service.js";
+import type { CartService } from "./cart.service";
 
 const controllerFactory = (service: CartService) => ({
   async get(req: Request, res: Response) {

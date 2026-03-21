@@ -44,6 +44,7 @@ function httpMiddleware(logger: Logger) {
       event: "http.request",
       route: `${req.method} ${req.originalUrl}`,
       params: req.params,
+      body: req.body,
       headers: req.headers,
     });
 

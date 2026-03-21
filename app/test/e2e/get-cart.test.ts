@@ -70,7 +70,7 @@ test("GET /carts/{id}", async ({ context }) => {
   const response = await request(context.app).get(`/carts/${cartId}`);
 
   expect(response.status).toBe(200);
-  expect(response.body.id).toBe(String(cartId));
+  expect(response.body.id).toBe(cartId);
   expect(response.body.products).toContainEqual({
     id: broomstickId,
     name: "Broomstick",
