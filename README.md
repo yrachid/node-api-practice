@@ -82,3 +82,49 @@ To consider this project "done," you should be able to prove:
 1. **Zero Overselling:** If you have 10 items and 100 people click "Buy" at the same millisecond, exactly 10 orders are created.
 2. **Sub-100ms Latency:** The product listing page loads in under 100ms even when the database is under load.
 3. **Ghost Stock Recovery:** If a user reserves an item but closes their browser, that item becomes available to someone else exactly 5 minutes later without manual intervention.
+
+### Solution
+
+
+#### Add Product To Cart
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Stockroom
+    participant db@{"type": "database"}
+    participant product_cache@{"type": "database"}
+
+
+    User->>+Stockroom: GET/products/1
+    Stockroom->>+product_cache: GET 1
+    alt cache_hit
+      product_cache-->>-Stockroom:product(id:1, name:broom, price:10, stock:45)
+      Stockroom-->>User: 200 product(id:1, name:broom, price:10, stock:45)
+    else cache_miss
+      Stockroom-->>+db:SELECT * FROM products WHERE id = 1
+      db-->>-Stockroom:product(id:1, name:broom, price:10, stock:45)
+      Stockroom->>+product_cache:SET key:1 value: product(id:1, name:broom, price:10, stock:45) ttl: 1h
+      product_cache-->>-Stockroom:OK
+      Stockroom-->>-User: 200 product(id:1, name:broom, price:10, stock:45)
+    end
+
+
+    User->>+Stockroom: POST /carts (products: 1,2,3)
+    Stockroom->>+db: start_transaction
+    Stockroom->>db: UPDATE product SET stock=(stock - :reserve) WHERE id = 1 AND stock >= :reserve
+    db-->>Stockroom: result(affected_rows:n)
+    Stockroom->>db: UPDATE product SET stock=(stock - :reserve) WHERE id = 2 AND stock >= :reserve
+    db-->>Stockroom: result(affected_rows:n)
+    Stockroom->>db: UPDATE product SET stock=(stock - :reserve) WHERE id = 3 AND stock >= :reserve
+    db-->>Stockroom: result(affected_rows:n)
+    alt stock_missing
+      Stockroom->>db: rollback_transaction
+      Stockroom-->>User: 422
+    else stock_reserved
+      Stockroom->>db: CREATE cart RETURNING cart_id, expires_at, created_at
+      Stockroom->>db: INSERT INTO cart_products values (cart_id, product_id, reserve)...
+      Stockroom->>db: commit_transaction
+      Stockroom-->>-User:201 (cart_id, expires_at, created_at)
+    end
+```
