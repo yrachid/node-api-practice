@@ -10,6 +10,7 @@ function create(db: Connection) {
   const router = Router();
 
   router.get("/carts/:id", controller.get);
+  router.post("/carts", controller.create);
 
   return { router };
 }
