@@ -16,7 +16,7 @@ async function migrate(direction: "up" | "down") {
   }
 
   const config = ConfigurationModule.create(process.env);
-  const { logger } = LoggerModule.create(config);
+  const { logger } = LoggerModule.create("staging");
 
   const { connection } = DatabaseModule.create(config, logger);
 
