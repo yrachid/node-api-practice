@@ -8,6 +8,7 @@ import { ProductModule } from "./product/product.module";
 import { HealthCheckModule } from "./health-check/health-check.module";
 import { DatabaseModule, type Connection } from "./database.module";
 import { type ApplicationLogger, LoggerModule } from "./logger.module";
+import { CartModule } from "./cart/cart.module";
 
 export type ApplicationContext = {
   app: Express;
@@ -21,7 +22,7 @@ export function create(env: Env): ApplicationContext {
 
   const configuration = ConfigurationModule.create(env);
 
-  const loggerModule = LoggerModule.create(configuration);
+  const loggerModule = LoggerModule.create(configuration.profile);
 
   const databaseModule = DatabaseModule.create(
     configuration,
@@ -34,8 +35,11 @@ export function create(env: Env): ApplicationContext {
     db: databaseModule.connection,
   });
 
+  const cartModule = CartModule.create(databaseModule.connection);
+
   app.use(loggerModule.httpMiddleware);
   app.use(productModule.router);
+  app.use(cartModule.router);
   app.use(healthCheckModule.router);
 
   return {

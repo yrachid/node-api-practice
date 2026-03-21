@@ -7,10 +7,24 @@ export interface Product {
   id: Generated<number>;
   name: string;
   price: number;
+  stock_count: number;
+}
+
+export interface Cart {
+  id: Generated<number>;
+  created_at: Date;
+}
+
+export interface CartProduct {
+  cart_id: number;
+  product_id: number;
+  stock_count: number;
 }
 
 export interface Database {
   products: Product;
+  carts: Cart;
+  carts_products: CartProduct;
 }
 
 export type Connection = Kysely<Database>;

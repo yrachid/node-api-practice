@@ -1,4 +1,4 @@
-import { type AppConfig, Profile } from "./configuration.module";
+import { Profile } from "./configuration.module";
 import type { NextFunction, Request, Response } from "express";
 
 export type LogPayload = Record<string, unknown>;
@@ -71,8 +71,8 @@ function httpMiddleware(logger: Logger) {
   };
 }
 
-function create(configuration: AppConfig) {
-  const logger = new Logger(configuration.profile);
+function create(profile: Profile) {
+  const logger = new Logger(profile);
 
   return {
     logger,

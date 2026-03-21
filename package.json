@@ -7,13 +7,14 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "NODE_ENV=staging tsx app/src/index.ts | jq -R '. as $line | try(fromjson) catch $line'",
-    "test": "NODE_ENV=test vitest run",
+    "dev": "tsx app/src/index.ts | jq -R '. as $line | try(fromjson) catch $line'",
+    "test": "NODE_ENV=test vitest run --no-file-parallelism",
     "migrate:add": "bash ./scripts/new-migration.sh",
-    "migrate": "tsx app/src/migrate.ts",
-    "migrate:down": "tsx app/src/migrate.ts down"
+    "migrate:up": "tsx app/src/migrate.ts | jq -R '. as $line | try(fromjson) catch $line'",
+    "migrate:down": "tsx app/src/migrate.ts down | jq -R '. as $line | try(fromjson) catch $line'"
   },
   "dependencies": {
+    "cache-manager": "^7.2.8",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "kysely": "^0.28.12",

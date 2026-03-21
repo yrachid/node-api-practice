@@ -10,9 +10,9 @@ Tech stack:
 - docker compose
 
 ## Infra checklist
-- [ ] Postgres database
-  - [ ] Staging: persistent
-  - [ ] Test: ephemeral
+- [x] Postgres database
+  - [x] Staging: persistent
+  - [x] Test: ephemeral
 - [ ] Redis server
 
 ## Tools & Libs checklist
@@ -21,10 +21,11 @@ Tech stack:
 - [x] Formatting: biome;
 - [x] Unit Testing: vitest;
 - [x] E2E testing: supertest (with vitest)
-- [ ] Logging: pino
-- [ ] Database: kysely
-- [ ] Database migrations:
-- [ ] Env vars: dotenv
+- [x] Database: kysely
+- [x] Database migrations: kysely
+- [x] Env vars: dotenv
+- [ ] Schema validation: zod
+- [ ] Caching: cache-manager
 
 
 # Requirements

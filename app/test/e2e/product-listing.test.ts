@@ -8,6 +8,7 @@ test.beforeEach(async ({ context }) => {
     .values({
       name: "Broomstick",
       price: 25.5,
+      stock_count: 10,
     })
     .execute();
 
@@ -16,7 +17,7 @@ test.beforeEach(async ({ context }) => {
   };
 });
 
-test("Product Listing", async ({ context }) => {
+test("GET /products", async ({ context }) => {
   const response = await request(context.app).get("/products");
 
   expect(response.status).toBe(200);
