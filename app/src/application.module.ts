@@ -10,6 +10,7 @@ import { HealthCheckModule } from "./health-check/health-check.module";
 import { DatabaseModule, type Connection } from "./database.module";
 import { type ApplicationLogger, LoggerModule } from "./logger.module";
 import { CartModule } from "./cart/cart.module";
+import { CartExpirationQueue } from "./cart/cart-expiration.queue";
 
 export type ApplicationContext = {
   app: Express;
@@ -37,6 +38,18 @@ export function create(env: Env): ApplicationContext {
   });
 
   const cartModule = CartModule.create(databaseModule.connection);
+
+  const cartExpirationQueue = CartExpirationQueue.create(
+    configuration,
+    loggerModule.logger,
+    databaseModule.connection,
+  );
+
+  cartExpirationQueue.schedule().then(() =>
+    loggerModule.logger.info({
+      event: "cart_expiration.queue.register.success",
+    }),
+  );
 
   app.use(bodyParser.json());
   app.use(loggerModule.httpMiddleware);

@@ -13,6 +13,8 @@ const TEST_ENV = {
   DATABASE_PORT: "5433",
   DATABASE_USER: "postgres",
   PORT: "3002",
+  REDIS_HOST: "localhost",
+  REDIS_PORT: "6380",
 };
 
 export const test = baseTest.extend("context", () => {

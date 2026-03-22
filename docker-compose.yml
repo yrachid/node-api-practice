@@ -46,6 +46,19 @@ services:
       timeout: 3s
       retries: 5
 
+  redis_test:
+    image: redis:7
+    container_name: redis_test
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
 volumes:
   postgres_staging_data:
   redis_staging_data:

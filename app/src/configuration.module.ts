@@ -4,37 +4,37 @@ type ReadOptions = {
   allowedValues?: Array<string>;
 };
 
-function readString<T extends string>(
-  env: Env,
-  name: string,
-  options?: ReadOptions,
-) {
-  const value = env[name];
+export const envReader = (env: Env) => {
+  function readString<T extends string>(name: string, options?: ReadOptions) {
+    const value = env[name];
 
-  if (!value) {
-    throw new Error(`Missing environment variable: ${name}`);
+    if (!value) {
+      throw new Error(`Missing environment variable: ${name}`);
+    }
+
+    if (options?.allowedValues && !options.allowedValues.includes(value)) {
+      throw new Error(
+        `Invalid value for environment variable ${name}. Expected one of: ${options.allowedValues}`,
+      );
+    }
+
+    return value as T;
   }
 
-  if (options?.allowedValues && !options.allowedValues.includes(value)) {
-    throw new Error(
-      `Invalid value for environment variable ${name}. Expected one of: ${options.allowedValues}`,
-    );
+  function readNumber(name: string) {
+    const stringValue = readString(name);
+
+    const parsed = parseInt(stringValue);
+
+    if (isNaN(parsed)) {
+      throw new Error(`Expected numeric value for variable ${name}`);
+    }
+
+    return parsed;
   }
 
-  return value as T;
-}
-
-function readNumber(env: Env, name: string) {
-  const stringValue = readString(env, name);
-
-  const parsed = parseInt(stringValue);
-
-  if (isNaN(parsed)) {
-    throw new Error(`Expected numeric value for variable ${name}`);
-  }
-
-  return parsed;
-}
+  return { string: readString, number: readNumber };
+};
 
 export const Profile = {
   TEST: "test",
@@ -55,22 +55,32 @@ export type AppConfig = {
     password: string;
     poolSize: number;
   };
+  redis: {
+    host: string;
+    port: number;
+  };
 };
 
 export function create(env: Env): AppConfig {
+  const reader = envReader(env);
+
   return {
     database: {
-      host: readString(env, "DATABASE_HOST"),
-      port: readNumber(env, "DATABASE_PORT"),
-      name: readString(env, "DATABASE_NAME"),
-      user: readString(env, "DATABASE_USER"),
-      password: readString(env, "DATABASE_PASSWORD"),
-      poolSize: readNumber(env, "DATABASE_POOL_SIZE"),
+      host: reader.string("DATABASE_HOST"),
+      port: reader.number("DATABASE_PORT"),
+      name: reader.string("DATABASE_NAME"),
+      user: reader.string("DATABASE_USER"),
+      password: reader.string("DATABASE_PASSWORD"),
+      poolSize: reader.number("DATABASE_POOL_SIZE"),
     },
-    profile: readString(env, "NODE_ENV", {
+    redis: {
+      host: reader.string("REDIS_HOST"),
+      port: reader.number("REDIS_PORT"),
+    },
+    profile: reader.string("NODE_ENV", {
       allowedValues: Object.values(Profile),
     }),
-    port: readNumber(env, "PORT"),
+    port: reader.number("PORT"),
   };
 }
 
